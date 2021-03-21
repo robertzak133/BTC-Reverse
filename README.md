@@ -1,5 +1,5 @@
 # Introduction
-This repository contains tools and files reverse engineering Browning Trail Cameras.  Sor far, it is focused on the Recon Force Advantage (BTC-7A), Recon Force SpecOps (BTC-8A), and Edge Spec Ops (BTC-8E).
+This repository contains tools and files for reverse engineering Browning Trail Cameras.  So far, it is focused on the Recon Force Advantage (BTC-7A), Recon Force SpecOps (BTC-8A), and Edge Spec Ops (BTC-8E).
 
 These trail cameras use IP developed under the SunPlus/iCatch consortium, as well as customizations introduced by the camera maker Prometheus Group, LLC
 
@@ -14,18 +14,34 @@ These tools allow:
 
 The tools are written primarily in Python, and have been optimized to run in the Google Colab environment.  Code that cannot run in the cloud, such as the EEPROM extractor, which requires access to a local USB serial port, are written in C and optimized for MS VisualStudio2017.
 
-These tools are provided with no guarantee, and without authorization or support by Prometheus Grup, LLC, or the SunPlus/iCatch consortium -- use at your own risk
+These tools are provided with no guarantee, and without authorization or support by Prometheus Group, LLC, or the SunPlus/iCatch consortium.  Use at your own risk
 
 # Browning Trail Camera Hardware and Software environment
-The Browning Trail camera software envionment is targeted at the iCatch V3x MIPS-core-based SOC products. They contain a single image sensor (e.g. the Sony SonyIMX291), a high speed interface to an SD card for storing photos and videos, a 4-bit wide high speed EEPROM for storing program, filesystem, and configuration data, an VGA color LCD screen and push button interface, a driver for an LED illuminator for night-time photos and videos, a driver for a motor which moves an IR-filter in or out of the optical path, a real-time-clock, a digital interface to an ultra low power PIR sensor for target detection, a USB port, and an external HDMI port.
+The Browning Trail camera software environment is targeted at the iCatch V3x MIPS-core-based SOC products.
+
+The Camera Hardware include:
+* a single image sensor (e.g. the Sony SonyIMX291)
+* a high speed interface to an SD card for storing photos and videos
+* a 4-bit wide high speed EEPROM for storing program, filesystem, and configuration data,
+* a VGA color LCD screen and push button interface
+* a driver for an LED illuminator for night-time photos and videos
+* a driver for a motor which moves an IR-filter in or out of the optical path
+* a real-time-clock
+* a digital interface to an ultra-low-power Passive InfraRed (PIR) sensor for target detection
+* a USB port
+* an external HDMI port.
 
 TODO -- make a block diagram
 
 The BTC runs the ThreadX RTOS with a local SunPlus/iCatch shim code.
 
-Most of the time, the BTC hardware is in an extremely low-power state in which the DRAM, MIPS processor, and image processing pipeline are all powered off.  The only active elements are: the RTC; an interrupt system which monitors two inputs -- one from the PIR sensor (indicating that an animal has been detected), and one from the keyboard and soft "on switch".
+Most of the time, the BTC hardware is in an extremely low-power state to conserve battery energy.  In this state, the DRAM, MIPS processor, and image processing pipeline are all powered off.  The only active elements are:
+* the RTC
+* an interrupt system which monitors two inputs -- one from the PIR sensor (indicating that an animal has been detected), and one from the keyboard and soft "on switch".
 
-When a "power on" or "PIR interrupt" is detected, the camera wakes to an active state in which other subsystems are now active.  Critically, before executing any code, the SOC loads DRAM from a region in the EEPRROM which stores the combined application and RTOS binary.  Once the RTOS is up, the application has access to a file system copmrising EEPROM-based  "A:" and "B:" drives, as well as the SD card "D:" drive.  The EEPROM drives store read-only files (e.g. those that configure the image processing pipeline and JPG and SFN files for the cameras UI), as well as read-write files for storign configuration state (e.g. the user settings).
+When a "power on" or "PIR interrupt" is detected, the camera wakes to an active state in which other subsystems are powered-on.  Critically, before executing any code, the SOC loads DRAM with the combined appliation and RTOS binary from a region in the EEPROM.  Once the RTOS is up, the application has access to a file system comprising EEPROM-based  "A:" and "B:" drives, as well as the SD card "D:" drive.  
+
+The EEPROM drives store read-only files (e.g. those that configure the image processing pipeline and JPG and SFN files for the cameras UI), as well as read-write files for storing configuration state (e.g. the user settings).
 
 The BTC firmware makes extensive use of internal timers, which tend to put the camera into it's low power, "waiting to take a photo or video" mode.  These timers are generally active, but are disabled when the device is in "USB-external-device" mode, and when the user is reviewing photos and videos on the LCD screen.
 
