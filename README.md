@@ -51,13 +51,14 @@ As far as I can tell, the native source code is C (vs. C++), with extensive use 
 # Debug Serial port
 The BTC-7A, 8A, 7E, 8E all support a debug serial interface.  Pads on the PCB labeled, "GND", "RX", "TX", and "VCC" comprise a 3.3 Volt serial interfaces configured for 115,200 Baud.
 
-The command line interface is not available in all modes.  In addition, it may be subject to the watchdog timer, as shown in table belw
+The command line interface is not available in all modes.  In addition, it may be subject to the watchdog timer, as shown in table below
 
-| Operating Mode | Command Line Supported | Watchdog Timer will Reset |
-| -------------- | ---------------------- | ------------------------- |
-| Configuration  | Yes  | Yes |
-| Taking Photos/Videos | No | NA |
-| USB Slave | Yes | No
+| Operating Mode | Command Line Supported | Watchdog Timer will Reset | SD (D:) Available |
+| -------------- | ---------------------- | ------------------------- | ----------------- |
+| Configuration  | Yes  | Yes | Yes |
+| Playback       | Yes  | No |  Yes |
+| Taking Photos/Videos | No | NA | No |
+| USB Slave | Yes | No | No |
 
 The command line interface supports the following commands.  "Help" column are results of typing "command -help".  Notes provide additional information. Unfortunately, most commands do not contain a "help" string.
 
@@ -220,19 +221,96 @@ The command line interface supports the following commands.  "Help" column are r
 | wrloop | wrloop - Write files and delete files when disk full | |
 
 
-
 # Carving the a Browning .BRN file
+
+See [Linouth/iCatch-V50-Playground](https://github.com/Linouth/iCatch-V50-Playground).  The BTC .BRN firmware file consists of the followign elements:
+
+* BRN Header
+* Offset1: There is binary code here in Browning firmware iamges, including an application and the RTOS, but I can find no evidence that this program is ever used, or that it is stored in the EERPOM.  Since it is not stored in EEPROM, it cannot be used by the camera, which relies on EEPROM to survive regular low power modes. 
+
+* Offset 2 Header: Header describing the number and extent of file systems
+** Offset 2.A : "A:\" File system
+** Offset 2.B: "B:\" File system
+* Offset 3: Main application and RTOS
+* Offset 4:
+* Offset 5:
+* Offset 6:
+* Magic String: "PROMETHEUS" -- note this is outside of the length of the file set in the BRN Header.  The presence of this string at the end of the file is one of the consistency checks the camera firmware peforms before it will load a new .BRN file.
 
 # Extracting EEPROM image
 
+TODO -- find file location -- contains a C-program for Windows (Visual Studio 2017) which extracts the contents of the EEPROM from the debug serial port and stores them as a binary (or .hex) format file.  
+
+TODO -- put in command line arguments for output filename.  If .bin -- use binary format; if .hex; use hex format, else complain
+
+This takes a while at 115200 Baud. 
+
 # Extracting DRAM image
+
+The DRAM on the BTC-{7A, 8A} starts at 0x80000000 and extends to 0x80FFFFFF (16 MBytes).  DRAM contains the RTOS and Application, stack, global vairables, and buffers used for profile database.  The contents of DRAM is lost every time the camera goes into low power state waiting for a trigger and is loaded from EEPROM everty time camera wakes up and takes a picture.  The time to laod DRAM from the EEPROM (approximately 350 ms) is the most significant source of "trigger delay" for the camera.
+
+The contents of DRAM can be transferred to a binary format file on the SD card (D:\ file system) by using the following command from the debug serial port:
+
+cmd> cd 
+cmd> write D:\btc-7a-memory-image.bin 0x80000000 8000000
+
+(execute this command while the camera is in "playback mode" to avoid interence of timeouts)
+
 
 # Ghidra
 
+# Manual Patch Creation
+
+# Source Code Inseration
+
+For more complex pathces, it is desirable to write the patch (a new, or existing function) in C and integrate it into the existing binary.
+
+Find a place for the patch: There are few areas in the binary which are left "free" of code in which to insert a patch of any signficiant new code.  The most effective method I have found for creating this space is to rewrite a function which is oversized because it supports more options than the trail camear hardare supports. 
+
+Example:  setDigitalEffect -- supports 16 different digital effects, only two of which are used by the trail camera.  The existing function, spanning some 3KBytes, can be greatly reduced in size by referencing the only two modes -- default and black and white -- supported by the camera.  The newly created space (\~ 2000 Bytes) can be used for a new function.  
+
+Use Ghidra to resolve necessary external memory and fucntion addresses.  Write these into the linker sript file. 
+
+Compose the patch in C, declaring external memory and function references
+
+
 # Patcher
+
+Python code which take a manual patch, or a patch generated by C-code path (above) and writes it into a iven application binary image, overwriting the previous contents. 
+
 
 # BRN file Creator
 
+Takes copies of 
+* BRN Header
+* Offset1: There is binary code here in Browning firmware iamges, including an application and the RTOS, but I can find no evidence that this program is ever used, or that it is stored in the EERPOM.  Since it is not stored in EEPROM, it cannot be used by the camera, which relies on EEPROM to survive regular low power modes. 
+
+** Offset 2.A : "A:\" File system
+** Offset 2.B: "B:\" File system
+* Offset 3: Main application and RTOS
+* Offset 4:
+* Offset 5:
+* Offset 6:
+* Magic String: "PROMETHEUS" -- note this is outside of the length of the file set in the BRN Header.  The presence of this string at the end of the file is one of the consistency checks the camera firmware peforms before it will load a new .BRN file.
+
+Creates a consisten
+
+
+Offset2.A, offset 2.B, Offset 3 and creates:
+
+* BRN Header
+* Offset 2 Header (based on the file system sizes in Offet2.A and Offset 2.B files)
+
+Then assembles all of these file into the specified output .BRN file.  This file can then be transferred to an SD card and loaded into the BTC via the "Update Firmware" option. 
+
+# Example 1: Hand patch to remove "black and white" from setDigitalEffect function
+
+# Exampel 2: Compiled C-code patch: reduce size of "setDigitalEffect" function and use the available space for a new function that extends the string printed at the bottom of the screen during Playback.
+
 # References
+
+* [Converting a Trail Camera from IR to White Flash] (https://ouroneacrefarm.com/winterberry-wildlife/) Blog post showing use of these tools to modify software in support of converting the BTC-7A from IR to White flash. 
+
+* [Linouth/iCatch-V50-Playground](https://github.com/Linouth/iCatch-V50-Playground): reverse engineering site aimed at reversing action cameras, also based on iCatch/SunPlus IP.  Structure of .BRN file is identifcal, but relatively simpler, since BTC does not compress any of the files in the file-system. 
 
 * [iCatch V35 Prduct Overview](https://www.icatchtek.com/ProductContent/1e74aa9e8e3c4bdcbfc5ee0f9c1a8206)
