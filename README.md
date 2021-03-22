@@ -5,6 +5,7 @@ These trail cameras use IP developed under the SunPlus/iCatch consortium, as wel
 
 These tools allow:
 
+* the command vocabulary of the serial debug port
 * the extraction or "carving" of pieces of firmware components from firmware update (\*.BRN) files available from the vendor
 * the extraction of a binary image from the board embedded EEPROM via the serial debug interface on the Camera PCB
 * the extraction of a binary image of DRAM via the serial debug interface on the camera PCB
@@ -46,6 +47,181 @@ The EEPROM drives store read-only files (e.g. those that configure the image pro
 The BTC firmware makes extensive use of internal timers, which tend to put the camera into it's low power, "waiting to take a photo or video" mode.  These timers are generally active, but are disabled when the device is in "USB-external-device" mode, and when the user is reviewing photos and videos on the LCD screen.
 
 As far as I can tell, the native source code is C (vs. C++), with extensive use of global variables to store shared data structures.
+
+# Debug Serial port
+The BTC-7A, 8A, 7E, 8E all support a debug serial interface.  Pads on the PCB labeled, "GND", "RX", "TX", and "VCC" comprise a 3.3 Volt serial interfaces configured for 115,200 Baud.
+
+The command line interface is not available in all modes.  In addition, it may be subject to the watchdog timer, as shown in table belw
+
+| Operating Mode | Command Line Supported | Watchdog Timer will Reset |
+| -------------- | ---------------------- | ------------------------- |
+| Configuration  | Yes  | Yes |
+| Taking Photos/Videos | No | NA |
+| USB Slave | Yes | No
+
+The command line interface supports the following commands.  "Help" column are results of typing "command -help".  Notes provide additional information. Unfortunately, most commands do not contain a "help" string.
+
+| Command | Help | Notes |
+| ------- | ---- | ----- |
+| 360rst  |      |       |
+| ad | | |
+| addrdump | | |
+| aeset	| | |
+| bayeroff | | |
+| cd	| change directory | Note avaialble file systems are A:\\, B:\\, and D:\\ |
+| cdspdump	| | |
+| cdspinfo	| | |
+| cdspload	| | |
+| cdsplut	| | |
+| cdspreg	| | |
+| chkdsk	| chkdsk - To Check the FAT link of file or disk. Ex. chdkdsk SUNP0001.JPG | |
+| clocktree	| clocktree - To disply the system clock tree setting. | | |
+| copy	        | file copy <src<> <destination> | |
+| cq0	| | |
+| del	| | |
+| diq	| | |
+| dir   | | print the contents of current directory (equivalent to "ls") |
+| dispclk | | |
+| dispcmen | | |
+| dispcmset | | |
+| dly	| dly - To delay by use GEN GPIO 0.;  dly < unit > < value >; Unit : 0 : 100ns, 1: 1ms; Value: Delay count by unit | |
+| dram | | |  
+| dramdmachk | | |
+| dump	| dump - Dump memory, dump [<b/w/h/l>] [<saddr> [<[+]eaddr>]], and use '0x' for
+	       hex  The end address (eaddr) can be a value or have a '+' to indicate
+	       a length. | Dumps to serial output |
+| edgechk | | |
+| emmcBreach | | emmc does not seem be supported in the BTC hardware |
+| emmce | | emmc does not seem be supported in the BTC hardware |
+| emmcFwDump | | emmc does not seem be supported in the BTC hardware |
+| emmcInfo | | emmc does not seem be supported in the BTC hardware |
+| emmcinit | | emmc does not seem be supported in the BTC hardware |
+| emmcIsp | | emmc does not seem be supported in the BTC hardware |
+| emmcr | | emmc does not seem be supported in the BTC hardware |
+| emmcscan | | emmc does not seem be supported in the BTC hardware |
+| emmcSysChk | | emmc does not seem be supported in the BTC hardware |
+| emmcw | | emmc does not seem be supported in the BTC hardware |
+| fcrc  | | |  
+| fct  | | |  
+| fhelp  | | |  
+| fill | fill - Fill memory, fill [<b/w/h/l>] <saddr> <[+]eaddr> <data>, use '0x' for hex| |
+| fmt | fmt - Format drive to special type of filesystem. usage: fmt <drive> <0|1> <FAT|FAT12|FAT16|FAT32|exFAT>; Ex. fmt D: 0 FAT16 | |
+| fpg | | |
+| fpllset | | |
+| frmrate | | |
+| frpsz | | |
+| fsif | | |
+| gpiomuxset | | |
+| gpioswapset | | |
+| help | | |
+| htmrd	| htmrd - To display the status of host timer. htmrd < tmrId >; tmrId : 0 ~ 7, if 0xffff will show all | |
+| htmre	htmre - To enable/disable the host timer; htmre < tmrId > < enable >; tmrId : 0 ~ 7 ( 0xffff will apply to all timer ); enable: 0/1 --> disable/enable. | does not disable watchdog timer |
+| htmrs	| htmrs - To config the host timer; htmrs < tmrId > < unit >; tmrId : 0 ~ 7; unit : Example 10 = 10ms. | |
+| hwver | | Print Hardware version to serial port |
+| info	| info - Display drive information. info <drive name> | |
+| io  | | |
+| iocfg | | |
+| iodir | | |
+| ioext | | |
+| iq | | |
+| iqsave | | |
+| ldsysinfo | | |
+| ldtbltest | | |
+| ls | list file contents | list file contents of current directory; same as "dir" |
+| mapExe | | |
+| mapVar | | |
+| media	| media - sub commands: play ff abort thumb seek |  |
+| mkdir	| | make directory |
+| msg   | msg - To send message msg < cmd > < para > | |
+| obdetonly | | |
+| os | os - Print OS information. Type os ? for more information | |
+| proc	| proc - proc en ms | |
+| prof	| profile -- debug printf statements from at uS granularity | |
+| pwm   | | |
+| pwmcfg | | |
+| r      | | read from memory r [<b/w/h/l>] <saddr> <[+]eaddr> <data>, use '0x' for hex| |
+| rcablc | | |
+| rcamw | | |
+| rcaraw | | |
+| rcasms | | |
+| read	| read - Read file to DRAM. Ex. read TEST.BIN 0xa1000000 | Used to dump program contents to file on SD card as binary |
+| regdump | | |
+| ren |	rename file | |
+| reportsize | reports sensor frame size options | |
+| reporty | | |
+| rmdir | | remove named direcotry |
+| rr  | | |
+| rsver | rsver - Erase rserved block (logical indexed) of SPI. rsvrd <blk> | |
+| rsvrd	rsvrd - Read rserved block of SPI. rsvrd <page> <nrPages> <address of DRAM> | |
+| rsvsdrd	rsvrd - Read rserved block of SPI. rsvrd <page> <nrPages> <address of DRAM> | |
+| rsvsdwr	rsvsdwr - Write rserved block of SD. rsvwr <page> <nrPages> <address of DRAM> | |
+| rsvwr	rsvwr - Write rserved block of SPI. rsvwr <page> <nrPages> <address of DRAM> | |
+| rtcg	rtcg - To display RTC time;  rtcs < option >; option = 0 --> data/time; option = 1 --> alarm data/time;  To display RTC reliable code ...; rtcs < option >; option = 2 | |
+| rtcreg	rtcreg - rtcreg : dump all RTC reg; rtcreg <addr> : read specified RTC reg; rtcreg <addr> <data> : write specified RTC reg | |
+| rtcs	rtcs - To set RTC time ...; rtcs < option > < Year > < Mon > < Day > < Hour > < Min > < Sec >; option = 0 --> data/time ; option = 1 --> alarm data/time;  To set RTC reliable code ...; rtcs < option > < code >; option = 2 | |
+| rtct	rtct - To execute the RTC test routine; rtct < Year > < Mon > < Day > < Hour > < Min > < Sec > | |
+| sar | | |
+| save | | |
+| savepv | | |
+| saveraw | | |
+| sdadj	| sdadj - Set SD Phase (-8~7) Latch (-8~7) | |
+| sdautoscan	| sdautoscan - sd parameter scan function; sdcan Freq Drive Phase; Freq  : 24M, 48M, 96M; Drive : H, L; Phase : 0x0 ~ 0xf; DLdly : 0x0 ~ 0x7 | |
+| sdboot | sdboot - SD FW boot to an address ( embeded=0,exter=1 );  sdboot 0 0xa0000000 | |
+| sdcfg	| sdcfg - To cfg sd/mmc card; sdcfg < sd/mmc > < bus> < freq >; sd/mmc : sd = 0, mmc = 1; bus    : 1 bit[0], 4 bit[1], 8 bit[2]; freq   : 24M[0], 12M[1], 6M[2], 375K[3], 48M[4] | |
+| sdcheck | | |
+| sdclk	sdclk | Set SD Clock (MHz) | |
+| sdcsdr | sdcsdr - SD device read/write test; sdrwt num blk | |
+| sdcsdw | sdcsdw - SD device read/write test; sdrwt num blk | |
+| sddrv	| sddrv - Set SD driving (0~3:2~8mA) | |
+| sdfwr	| sdfwr - Read F/W from SD's reserved blocks. rsvfwr <addr> <size> | |
+| sdfww	| sdfww - Write F/W into SD's reserved blocks. rsvfww <addr> <size> | |
+| sdhdr	| sdhdr - Display SD's reserved header; rsvhdr | |
+| sdlock | | |
+| sdr | sdr - Read a physical page from SD card. sdpr <devId> <page> <address of DRAM> | |
+| sdrwt	| sdrwt - SD device read/write test; sdrwt num blk |
+| sdscan | sdscan - sd parameter scan function; sdcan Freq Drive Phase; Freq  : 24M, 48M, 96M; Drive : H, L; Phase : 0x0 ~ 0xf; DLdly : 0x0 ~ 0x7 | |
+| sdset	| sdset - Allocate SD's reserved blocks; rsvset < size A > < size B > < size C > ( bytes ) | |
+| sdSpeedSet | | |
+| sdtest | sector by sector check of SD card | takes a (really) long time |
+| sdtune | | |
+| sdtx | sdtx - To send command to sd/mmc card; sdtx < cmd > < arg > < rsp > < buf > | |
+| sdw | sdw - Write a physical page from SD card. sdpr <devId> <page> <address of DRAM> | |
+| search | search - Search memory, search [<b/w/h/l>] <saddr> [<[+]eaddr>] <pattern>, and use '0x' for hex. | |
+| sizedum | | interesting status |
+| sleep2 | | |
+| snap | | |
+| spibus  | spibus - set SPI bit width. spibus <bit width 1,2,4> | |
+| spidet  | spidet - SPI device detect; spidet | |
+| spidrv  | spidrv - set SPI driving strengh. spidrv <0~3> | note that this apparently cannot be used to allow "on board" access to the SPI EEPROM |
+| spier	| spier - Erase one block, spier <devId> <page> | |
+| spifwr | spifwr - Read F/W from SPI's reserved blocks. rsvfwr <addr> <size> | |
+| spifww | spifww - Write F/W into SPI's reserved blocks. rsvfww <addr> <size> | |
+| spihdr | spihdr - Display SPI's reserved header; rsvhdr | |
+| spipr	| spipr - Read a physical page from SPI card. spipr <devId> <page> <address of DRAM> | |
+| spipw	| spipw - Write a physical page from SPI card. spipr <devId> <page> <address of DRAM> | |
+| spir | spir - Read a physical page from SPI card. spipr <devId> <page> <address of DRAM> | |
+| spirwt | spirwt - SPI device read/write test; spirwt num blk | Note that this test is *destrucitve, and will erase the SPI EEPROM, effectively "bricking" the camera |
+| spiscan | spiscan - spi scan function; mode  : 0,3,4; drv   : 0~3; bus   : 1,2,4; clk   : 1~254; div   : 0~7 | |
+| spiset | spiset - Allocate SPI's reserved blocks. rsvset < size A > < size B > < size C > ( bytes ) | |
+| suspend | | |
+| syspllset | | |
+| Test_eMMCIRW | | |
+| Test_SDIRW | | |
+| Test_SPIRW | | |
+| usb | | |
+| usbls | | |
+| usbmm | | |
+| usbms | | |
+| usbsc | | |
+| usbt | | |
+| ver | | |
+| verify | verify - verify #file [#repeat #len].  Read file several time and verify | |
+| videostate | | |
+| w | | |
+| write	 | write - Write file to card. Ex. write TEST.BIN 0xa1000000 1024 | | 
+| wrloop | wrloop - Write files and delete files when disk full | |
+
+
 
 # Carving the a Browning .BRN file
 
