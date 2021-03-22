@@ -87,9 +87,7 @@ The command line interface supports the following commands.  "Help" column are r
 | dly	| dly - To delay by use GEN GPIO 0.;  dly < unit > < value >; Unit : 0 : 100ns, 1: 1ms; Value: Delay count by unit | |
 | dram | | |  
 | dramdmachk | | |
-| dump	| dump - Dump memory, dump [<b/w/h/l>] [<saddr> [<[+]eaddr>]], and use '0x' for
-	       hex  The end address (eaddr) can be a value or have a '+' to indicate
-	       a length. | Dumps to serial output |
+| dump	| dump - Dump memory, dump [<b/w/h/l>] [<saddr> [<[+]eaddr>]], and use '0x' for hex;  The end address (eaddr) can be a value or have a '+' to indicate a length. | Dumps to serial output |
 | edgechk | | |
 | emmcBreach | | emmc does not seem be supported in the BTC hardware |
 | emmce | | emmc does not seem be supported in the BTC hardware |
