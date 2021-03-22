@@ -112,9 +112,9 @@ The command line interface supports the following commands.  "Help" column are r
 | gpiomuxset | | |
 | gpioswapset | | |
 | help | | |
-| htmrd	| htmrd - To display the status of host timer. htmrd < tmrId >; tmrId : 0 ~ 7, if 0xffff will show all | |
-| htmre	htmre - To enable/disable the host timer; htmre < tmrId > < enable >; tmrId : 0 ~ 7 ( 0xffff will apply to all timer ); enable: 0/1 --> disable/enable. | does not disable watchdog timer |
-| htmrs	| htmrs - To config the host timer; htmrs < tmrId > < unit >; tmrId : 0 ~ 7; unit : Example 10 = 10ms. | |
+| htmrd	| htmrd - To display the status of host timer. htmrd < tmrId >; tmrId : 0 \~ 7, if 0xffff will show all | |
+| htmre	htmre - To enable/disable the host timer; htmre < tmrId > < enable >; tmrId : 0 \~ 7 ( 0xffff will apply to all timer ); enable: 0/1 --> disable/enable. | does not disable watchdog timer |
+| htmrs	| htmrs - To config the host timer; htmrs < tmrId > < unit >; tmrId : 0 \~ 7; unit : Example 10 = 10ms. | |
 | hwver | | Print Hardware version to serial port |
 | info	| info - Display drive information. info <drive name> | |
 | io  | | |
@@ -157,27 +157,27 @@ The command line interface supports the following commands.  "Help" column are r
 | rtcg | rtcg - To display RTC time;  rtcs < option >; option = 0 --> data/time; option = 1 --> alarm data/time;  To display RTC reliable code ...; rtcs < option >; option = 2 | |
 | rtcreg | rtcreg - rtcreg : dump all RTC reg; rtcreg <addr> : read specified RTC reg; rtcreg <addr> <data> : write specified RTC reg | |
 | rtcs | rtcs - To set RTC time ...; rtcs < option > < Year > < Mon > < Day > < Hour > < Min > < Sec >; option = 0 --> data/time ; option = 1 --> alarm data/time;  To set RTC reliable code ...; rtcs < option > < code >; option = 2 | |
-| rtct	rtct - To execute the RTC test routine; rtct < Year > < Mon > < Day > < Hour > < Min > < Sec > | |
+| rtct	| rtct - To execute the RTC test routine; rtct < Year > < Mon > < Day > < Hour > < Min > < Sec > | |
 | sar | | |
 | save | | |
 | savepv | | |
 | saveraw | | |
-| sdadj	| sdadj - Set SD Phase (-8~7) Latch (-8~7) | |
-| sdautoscan	| sdautoscan - sd parameter scan function; sdcan Freq Drive Phase; Freq  : 24M, 48M, 96M; Drive : H, L; Phase : 0x0 ~ 0xf; DLdly : 0x0 ~ 0x7 | |
+| sdadj	| sdadj - Set SD Phase (-8\~7) Latch (-8\~7) | |
+| sdautoscan	| sdautoscan - sd parameter scan function; sdcan Freq Drive Phase; Freq  : 24M, 48M, 96M; Drive : H, L; Phase : 0x0 \~ 0xf; DLdly : 0x0 \~ 0x7 | |
 | sdboot | sdboot - SD FW boot to an address ( embeded=0,exter=1 );  sdboot 0 0xa0000000 | |
 | sdcfg	| sdcfg - To cfg sd/mmc card; sdcfg < sd/mmc > < bus> < freq >; sd/mmc : sd = 0, mmc = 1; bus    : 1 bit[0], 4 bit[1], 8 bit[2]; freq   : 24M[0], 12M[1], 6M[2], 375K[3], 48M[4] | |
 | sdcheck | | |
 | sdclk	sdclk | Set SD Clock (MHz) | |
 | sdcsdr | sdcsdr - SD device read/write test; sdrwt num blk | |
 | sdcsdw | sdcsdw - SD device read/write test; sdrwt num blk | |
-| sddrv	| sddrv - Set SD driving (0~3:2~8mA) | |
+| sddrv	| sddrv - Set SD driving (0\~3 mA:2\~8mA) | |
 | sdfwr	| sdfwr - Read F/W from SD's reserved blocks. rsvfwr <addr> <size> | |
 | sdfww	| sdfww - Write F/W into SD's reserved blocks. rsvfww <addr> <size> | |
 | sdhdr	| sdhdr - Display SD's reserved header; rsvhdr | |
 | sdlock | | |
 | sdr | sdr - Read a physical page from SD card. sdpr <devId> <page> <address of DRAM> | |
 | sdrwt	| sdrwt - SD device read/write test; sdrwt num blk |
-| sdscan | sdscan - sd parameter scan function; sdcan Freq Drive Phase; Freq  : 24M, 48M, 96M; Drive : H, L; Phase : 0x0 ~ 0xf; DLdly : 0x0 ~ 0x7 | |
+| sdscan | sdscan - sd parameter scan function; sdcan Freq Drive Phase; Freq  : 24M, 48M, 96M; Drive : H, L; Phase : 0x0 \~ 0xf; DLdly : 0x0 \~ 0x7 | |
 | sdset	| sdset - Allocate SD's reserved blocks; rsvset < size A > < size B > < size C > ( bytes ) | |
 | sdSpeedSet | | |
 | sdtest | sector by sector check of SD card | takes a (really) long time |
@@ -190,7 +190,7 @@ The command line interface supports the following commands.  "Help" column are r
 | snap | | |
 | spibus  | spibus - set SPI bit width. spibus <bit width 1,2,4> | |
 | spidet  | spidet - SPI device detect; spidet | |
-| spidrv  | spidrv - set SPI driving strengh. spidrv <0~3> | note that this apparently cannot be used to allow "on board" access to the SPI EEPROM |
+| spidrv  | spidrv - set SPI driving strengh. spidrv <0\~3> | note that this apparently cannot be used to allow "on board" access to the SPI EEPROM |
 | spier	| spier - Erase one block, spier <devId> <page> | |
 | spifwr | spifwr - Read F/W from SPI's reserved blocks. rsvfwr <addr> <size> | |
 | spifww | spifww - Write F/W into SPI's reserved blocks. rsvfww <addr> <size> | |
@@ -199,7 +199,7 @@ The command line interface supports the following commands.  "Help" column are r
 | spipw	| spipw - Write a physical page from SPI card. spipr <devId> <page> <address of DRAM> | |
 | spir | spir - Read a physical page from SPI card. spipr <devId> <page> <address of DRAM> | |
 | spirwt | spirwt - SPI device read/write test; spirwt num blk | Note that this test is *destrucitve, and will erase the SPI EEPROM, effectively "bricking" the camera |
-| spiscan | spiscan - spi scan function; mode  : 0,3,4; drv   : 0\~3; bus   : 1,2,4; clk   : 1\~254; div   : 0~7 | |
+| spiscan | spiscan - spi scan function; mode  : 0,3,4; drv   : 0\~3; bus   : 1,2,4; clk   : 1\~254; div   : 0\~7 | |
 | spiset | spiset - Allocate SPI's reserved blocks. rsvset < size A > < size B > < size C > ( bytes ) | |
 | suspend | | |
 | syspllset | | |
