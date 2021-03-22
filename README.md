@@ -150,13 +150,13 @@ The command line interface supports the following commands.  "Help" column are r
 | rmdir | | remove named direcotry |
 | rr  | | |
 | rsver | rsver - Erase rserved block (logical indexed) of SPI. rsvrd <blk> | |
-| rsvrd	rsvrd - Read rserved block of SPI. rsvrd <page> <nrPages> <address of DRAM> | |
-| rsvsdrd	rsvrd - Read rserved block of SPI. rsvrd <page> <nrPages> <address of DRAM> | |
-| rsvsdwr	rsvsdwr - Write rserved block of SD. rsvwr <page> <nrPages> <address of DRAM> | |
-| rsvwr	rsvwr - Write rserved block of SPI. rsvwr <page> <nrPages> <address of DRAM> | |
-| rtcg	rtcg - To display RTC time;  rtcs < option >; option = 0 --> data/time; option = 1 --> alarm data/time;  To display RTC reliable code ...; rtcs < option >; option = 2 | |
-| rtcreg	rtcreg - rtcreg : dump all RTC reg; rtcreg <addr> : read specified RTC reg; rtcreg <addr> <data> : write specified RTC reg | |
-| rtcs	rtcs - To set RTC time ...; rtcs < option > < Year > < Mon > < Day > < Hour > < Min > < Sec >; option = 0 --> data/time ; option = 1 --> alarm data/time;  To set RTC reliable code ...; rtcs < option > < code >; option = 2 | |
+| rsvrd | rsvrd - Read rserved block of SPI. rsvrd <page> <nrPages> <address of DRAM> | |
+| rsvsdrd | rsvrd - Read rserved block of SPI. rsvrd <page> <nrPages> <address of DRAM> | |
+| rsvsdwr |rsvsdwr - Write rserved block of SD. rsvwr <page> <nrPages> <address of DRAM> | |
+| rsvwr | rsvwr - Write rserved block of SPI. rsvwr <page> <nrPages> <address of DRAM> | |
+| rtcg | rtcg - To display RTC time;  rtcs < option >; option = 0 --> data/time; option = 1 --> alarm data/time;  To display RTC reliable code ...; rtcs < option >; option = 2 | |
+| rtcreg | rtcreg - rtcreg : dump all RTC reg; rtcreg <addr> : read specified RTC reg; rtcreg <addr> <data> : write specified RTC reg | |
+| rtcs | rtcs - To set RTC time ...; rtcs < option > < Year > < Mon > < Day > < Hour > < Min > < Sec >; option = 0 --> data/time ; option = 1 --> alarm data/time;  To set RTC reliable code ...; rtcs < option > < code >; option = 2 | |
 | rtct	rtct - To execute the RTC test routine; rtct < Year > < Mon > < Day > < Hour > < Min > < Sec > | |
 | sar | | |
 | save | | |
@@ -199,7 +199,7 @@ The command line interface supports the following commands.  "Help" column are r
 | spipw	| spipw - Write a physical page from SPI card. spipr <devId> <page> <address of DRAM> | |
 | spir | spir - Read a physical page from SPI card. spipr <devId> <page> <address of DRAM> | |
 | spirwt | spirwt - SPI device read/write test; spirwt num blk | Note that this test is *destrucitve, and will erase the SPI EEPROM, effectively "bricking" the camera |
-| spiscan | spiscan - spi scan function; mode  : 0,3,4; drv   : 0~3; bus   : 1,2,4; clk   : 1~254; div   : 0~7 | |
+| spiscan | spiscan - spi scan function; mode  : 0,3,4; drv   : 0\~3; bus   : 1,2,4; clk   : 1\~254; div   : 0~7 | |
 | spiset | spiset - Allocate SPI's reserved blocks. rsvset < size A > < size B > < size C > ( bytes ) | |
 | suspend | | |
 | syspllset | | |
